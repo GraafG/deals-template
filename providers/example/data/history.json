@@ -1,0 +1,19 @@
+{
+  "https://example.com/product/example-product": {
+    "name": "Example Product",
+    "location": "Online",
+    "provider": "Example Store",
+    "prices": [
+      { "date": "2026-01-01", "price": 30, "original": 40, "discount_num": 25 }
+    ],
+    "first_seen": "2026-01-01",
+    "last_seen": "2026-01-01",
+    "min_price": 30,
+    "max_price": 30,
+    "current_price": 30,
+    "at_lowest": true,
+    "trend": "new",
+    "days_tracked": 1,
+    "is_active": true
+  }
+}

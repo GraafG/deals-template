@@ -1,0 +1,16 @@
+[
+  {
+    "id": "example-product",
+    "url": "https://example.com/product/example-product",
+    "name": "Example Product",
+    "provider": "Example Store",
+    "location": "Online",
+    "categories": ["Example"],
+    "discount": "25% korting",
+    "discount_num": 25,
+    "original_price": 40,
+    "discounted_price": 30,
+    "savings": 10,
+    "match_status": "same"
+  }
+]

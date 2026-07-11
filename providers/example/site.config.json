@@ -1,0 +1,36 @@
+{
+  "id": "example",
+  "name": "Example Deals",
+  "shortName": "Example",
+  "siteUrl": "https://example.com/deals",
+  "base": "/deals",
+  "sourceUrl": "https://example.com",
+  "dataDir": "providers/example/data",
+  "theme": {
+    "primary": "#2563eb",
+    "secondary": "#1e40af",
+    "accent": "#bfdbfe",
+    "mark": "◆"
+  },
+  "copy": {
+    "homeTitle": "Example Deals - Price tracker",
+    "tagline": "Provider-configured deal tracker",
+    "description": "Example provider for the shared deals template.",
+    "hero": "Track prices, highlight changes, and customize provider branding from config.",
+    "rssTitle": "Example Deals",
+    "rssDescription": "Latest example deal changes.",
+    "ogTagline": "Shared deals template",
+    "ogBullets": [
+      "Provider config controls branding",
+      "Scrapers normalize to one schema",
+      "Maps can be enabled or disabled"
+    ],
+    "ogBadge": "Template ready"
+  },
+  "features": {
+    "prices": true,
+    "referral": false,
+    "winacties": false,
+    "map": false
+  }
+}
