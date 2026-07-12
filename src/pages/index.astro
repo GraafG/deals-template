@@ -672,6 +672,7 @@ function toggleSparkline(tr) {
   expandedUrl = expandedUrl === url ? null : url;
   renderTable();
 }
+window.toggleSparkline = toggleSparkline;
 
 function buildSparkline(deal) {
   const hist = deal._history || [];
@@ -815,6 +816,7 @@ function showView(view) {
     renderTable(); renderStats();
   }
 }
+window.showView = showView;
 
 function coordKey(lat, lng) {
   return lat.toFixed(5) + ',' + lng.toFixed(5);
