@@ -1,3 +1,10 @@
+# Grouping policy (shared across all provider deal-tracker repos):
+# - Patch + minor updates are batched into ONE pull request per ecosystem, so the
+#   backlog stays at roughly one reviewable PR per ecosystem per week.
+# - Major updates are deliberately left OUT of every group so they stay visible
+#   as individual pull requests that get a real review.
+# - Security updates are grouped separately so they are never queued behind a
+#   routine version bump.
 version: 2
 updates:
   - package-ecosystem: npm
@@ -7,14 +14,19 @@ updates:
       day: monday
       time: "06:00"
       timezone: Europe/Amsterdam
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 3
     groups:
-      astro:
+      npm-minor-patch:
+        applies-to: version-updates
         patterns:
-          - "astro"
-          - "@astrojs/*"
-      dev-dependencies:
-        dependency-type: development
+          - "*"
+        update-types:
+          - minor
+          - patch
+      npm-security:
+        applies-to: security-updates
+        patterns:
+          - "*"
     commit-message:
       prefix: chore(deps)
       include: scope
@@ -26,7 +38,19 @@ updates:
       day: monday
       time: "06:00"
       timezone: Europe/Amsterdam
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 3
+    groups:
+      pip-minor-patch:
+        applies-to: version-updates
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+      pip-security:
+        applies-to: security-updates
+        patterns:
+          - "*"
     commit-message:
       prefix: chore(deps)
       include: scope
@@ -38,7 +62,19 @@ updates:
       day: monday
       time: "06:00"
       timezone: Europe/Amsterdam
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 3
+    groups:
+      github-actions-minor-patch:
+        applies-to: version-updates
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+      github-actions-security:
+        applies-to: security-updates
+        patterns:
+          - "*"
     commit-message:
       prefix: chore(ci)
       include: scope
