@@ -1,7 +1,14 @@
 import { spawnSync } from 'child_process';
-import { DEFAULT_PROVIDER_ID } from './provider-config.mjs';
+import { resolveProviderId } from './provider-config.mjs';
 
-const providerId = process.argv[2] || process.env.PROVIDER_ID || DEFAULT_PROVIDER_ID;
+let providerId;
+try {
+  providerId = resolveProviderId(process.argv[2]);
+} catch (error) {
+  console.error(error.message);
+  process.exit(1);
+}
+
 const env = {
   ...process.env,
   PROVIDER_ID: providerId,
