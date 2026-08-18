@@ -1,6 +1,7 @@
 import { spawnSync } from 'child_process';
+import { DEFAULT_PROVIDER_ID } from './provider-config.mjs';
 
-const providerId = process.argv[2] || process.env.PROVIDER_ID || 'tripper';
+const providerId = process.argv[2] || process.env.PROVIDER_ID || DEFAULT_PROVIDER_ID;
 const env = {
   ...process.env,
   PROVIDER_ID: providerId,

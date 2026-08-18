@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from 'fs';
 import { resolve } from 'path';
 
-export const DEFAULT_PROVIDER_ID = 'tripper';
+export const DEFAULT_PROVIDER_ID = 'example';
 
 export function getProviderId() {
   return process.env.PROVIDER_ID || process.env.PUBLIC_PROVIDER_ID || DEFAULT_PROVIDER_ID;

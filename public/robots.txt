@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://graafg.github.io/tripper-deals/sitemap.xml
