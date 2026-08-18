@@ -1,14 +1,38 @@
 ---
 import Base from '../layouts/Base.astro';
-import { SITE_URL, TRIPPER_REF } from '../lib/config';
+import {
+  SITE_CONFIG,
+  SITE_URL,
+  REFERRAL_VALUE,
+  REFERRAL_PARAM,
+  REFERRAL_ENABLED,
+  SOURCE_NAME,
+  SOURCE_SITE_URL,
+  SOURCE_PRIVACY_URL,
+  CONTACT_EMAIL,
+} from '../lib/config';
 
 const canonical = `${SITE_URL}/privacy/`;
 const lastUpdated = '2026-06-04';
-const contactEmail = 'info@free4me.nl';
+const contactEmail = CONTACT_EMAIL;
+const hasMap = SITE_CONFIG.features.map !== false;
+
+let sectionCount = 0;
+const section = {
+  collect: ++sectionCount,
+  logs: ++sectionCount,
+  affiliate: REFERRAL_ENABLED ? ++sectionCount : 0,
+  assets: ++sectionCount,
+  rights: ++sectionCount,
+  changes: ++sectionCount,
+  contact: ++sectionCount,
+};
+
+const thirdParties = ['GitHub', SOURCE_NAME, 'Google Fonts', ...(hasMap ? ['OpenStreetMap'] : [])];
 ---
 <Base
-  title="Privacy & affiliate-disclosure — Tripper Deals"
-  description="Privacyverklaring van Tripper Deals: wat verzamelen we (niets) en hoe werkt onze Tripper.nl affiliate-link."
+  title={`Privacy & affiliate-disclosure — ${SITE_CONFIG.name}`}
+  description={`Privacyverklaring van ${SITE_CONFIG.name}: wat verzamelen we (niets)${REFERRAL_ENABLED ? ` en hoe werkt onze ${SOURCE_NAME} affiliate-link` : ''}.`}
   canonical={canonical}
   ogType="article"
 >
@@ -19,21 +43,21 @@ const contactEmail = 'info@free4me.nl';
     <p><small>Laatst bijgewerkt: {lastUpdated}</small></p>
 
     <p>
-      Tripper Deals is een onafhankelijk, statisch overzicht van vakantie- en reisaanbiedingen
-      van <a href="https://www.tripper.nl/" rel="noopener noreferrer">Tripper.nl</a>. We maken
+      {SITE_CONFIG.name} is een onafhankelijk, statisch overzicht van aanbiedingen
+      van <a href={SOURCE_SITE_URL} rel="noopener noreferrer">{SOURCE_NAME}</a>. We maken
       het overzicht omdat we het zelf handig vinden, en delen het hier gratis. Deze pagina legt
       uit welke gegevens we wel en niet verwerken.
     </p>
 
-    <h2>1. Wat verzamelen wij zelf?</h2>
+    <h2>{section.collect}. Wat verzamelen wij zelf?</h2>
     <p>
-      <strong>Niets.</strong> Tripper Deals draait als statische site op GitHub Pages. We hebben
+      <strong>Niets.</strong> {SITE_CONFIG.name} draait als statische site op GitHub Pages. We hebben
       geen accounts, formulieren, cookies, tracking, advertentie&shy;netwerken of analytics. We
       zien dus niet wie de site bezoekt, vanaf welk IP, met welke browser of vanaf welke pagina
       iemand binnenkomt.
     </p>
 
-    <h2>2. Server-logs van GitHub Pages</h2>
+    <h2>{section.logs}. Server-logs van GitHub Pages</h2>
     <p>
       De site wordt gehost door GitHub Pages. GitHub bewaart kort technische logs (waaronder
       IP-adres en user-agent) van inkomende verzoeken, vergelijkbaar met iedere webserver. Wij
@@ -42,25 +66,29 @@ const contactEmail = 'info@free4me.nl';
          rel="noopener noreferrer">GitHub Privacy Statement</a>.
     </p>
 
-    <h2>3. Affiliate-links naar Tripper.nl</h2>
-    <p>
-      Iedere externe link op deze site naar tripper.nl krijgt automatisch onze persoonlijke
-      referral-code <code>?ref={TRIPPER_REF}</code>. Als je via zo&apos;n link iets boekt bij
-      Tripper.nl, kunnen wij daarvoor Tripper-spaarpunten ontvangen. Jij betaalt geen cent extra.
-    </p>
-    <p>
-      Wanneer je op zo&apos;n link klikt, kom je terecht op tripper.nl. Tripper.nl plaatst dan
-      mogelijk een affiliate-cookie om aan te tonen dat de boeking via ons gekomen is. Die cookie
-      is van Tripper.nl, niet van ons. Lees daarvoor de
-      <a href="https://www.tripper.nl/privacy/" rel="noopener noreferrer">privacyverklaring van
-      Tripper.nl</a>.
-    </p>
-    <p>
-      We markeren al deze links met <code>rel="sponsored nofollow noopener noreferrer"</code>,
-      zoals Google voor commerciële links voorschrijft.
-    </p>
+    {REFERRAL_ENABLED && (
+      <>
+        <h2>{section.affiliate}. Affiliate-links naar {SOURCE_NAME}</h2>
+        <p>
+          Iedere externe link op deze site naar {SOURCE_NAME} krijgt automatisch onze persoonlijke
+          referral-code <code>?{REFERRAL_PARAM}={REFERRAL_VALUE}</code>. Als je via zo&apos;n link iets boekt bij
+          {' '}{SOURCE_NAME}, kunnen wij daarvoor een vergoeding ontvangen. Jij betaalt geen cent extra.
+        </p>
+        <p>
+          Wanneer je op zo&apos;n link klikt, kom je terecht op {SOURCE_NAME}. {SOURCE_NAME} plaatst dan
+          mogelijk een affiliate-cookie om aan te tonen dat de boeking via ons gekomen is. Die cookie
+          is van {SOURCE_NAME}, niet van ons. Lees daarvoor de
+          {' '}<a href={SOURCE_PRIVACY_URL} rel="noopener noreferrer">privacyverklaring van
+          {' '}{SOURCE_NAME}</a>.
+        </p>
+        <p>
+          We markeren al deze links met <code>rel="sponsored nofollow noopener noreferrer"</code>,
+          zoals Google voor commerciële links voorschrijft.
+        </p>
+      </>
+    )}
 
-    <h2>4. Externe assets</h2>
+    <h2>{section.assets}. Externe assets</h2>
     <ul>
       <li>
         <strong>Google Fonts</strong> — het lettertype Inter wordt geladen vanaf
@@ -68,31 +96,37 @@ const contactEmail = 'info@free4me.nl';
         je IP-adres en welke pagina het lettertype opvraagt. We onderzoeken of we Inter zelf
         kunnen hosten om dit te voorkomen.
       </li>
-      <li>
-        <strong>OpenStreetMap</strong> &amp; <strong>Leaflet</strong> — alleen wanneer je de
-        kaartweergave opent, worden kaarttegels opgehaald bij OpenStreetMap. Zie het
-        <a href="https://wiki.osmfoundation.org/wiki/Privacy_Policy" rel="noopener noreferrer">
-        OSMF privacybeleid</a>.
-      </li>
+      {hasMap && (
+        <li>
+          <strong>OpenStreetMap</strong> &amp; <strong>Leaflet</strong> — alleen wanneer je de
+          kaartweergave opent, worden kaarttegels opgehaald bij OpenStreetMap. Zie het
+          <a href="https://wiki.osmfoundation.org/wiki/Privacy_Policy" rel="noopener noreferrer">
+          OSMF privacybeleid</a>.
+        </li>
+      )}
     </ul>
 
-    <h2>5. Jouw rechten (AVG)</h2>
+    <h2>{section.rights}. Jouw rechten (AVG)</h2>
     <p>
       Omdat we zelf geen persoons&shy;gegevens verwerken, zijn er ook geen gegevens om in te zien,
-      te corrigeren of te wissen. Heb je een vraag over verwerking door GitHub, Tripper.nl,
-      Google Fonts of OpenStreetMap, neem dan rechtstreeks contact op met die partij.
+      te corrigeren of te wissen. Heb je een vraag over verwerking door {thirdParties.join(', ')},
+      neem dan rechtstreeks contact op met die partij.
     </p>
 
-    <h2>6. Wijzigingen</h2>
+    <h2>{section.changes}. Wijzigingen</h2>
     <p>
       Als we ooit analytics, cookies of andere verwerkingen toevoegen, passen we deze pagina aan
       en vermelden we de wijzigingsdatum bovenaan.
     </p>
 
-    <h2>7. Contact</h2>
-    <p>
-      Vragen over privacy of deze pagina? Mail{' '}
-      <a href={`mailto:${contactEmail}`}>{contactEmail}</a>.
-    </p>
+    <h2>{section.contact}. Contact</h2>
+    {contactEmail ? (
+      <p>
+        Vragen over privacy of deze pagina? Mail{' '}
+        <a href={`mailto:${contactEmail}`}>{contactEmail}</a>.
+      </p>
+    ) : (
+      <p>Vragen over privacy of deze pagina? Neem contact op via de bron van deze site.</p>
+    )}
   </main>
 </Base>

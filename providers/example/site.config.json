@@ -5,6 +5,10 @@
   "siteUrl": "https://example.com/deals",
   "base": "/deals",
   "sourceUrl": "https://example.com",
+  "sourceName": "Example.com",
+  "sourcePrivacyUrl": "https://example.com/privacy/",
+  "repoUrl": "https://github.com/GraafG/deals-template",
+  "contactEmail": "info@example.com",
   "dataDir": "providers/example/data",
   "theme": {
     "primary": "#2563eb",

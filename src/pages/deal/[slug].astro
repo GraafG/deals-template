@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import { getAllDealDetails, getSlug } from '../../lib/deals';
 import type { DealDetail } from '../../lib/deals';
-import { SITE_CONFIG, SITE_URL, TRIPPER_REF } from '../../lib/config';
+import { SITE_CONFIG, SITE_URL, REFERRAL_VALUE, REFERRAL_PARAM, REFERRAL_ENABLED, SOURCE_NAME } from '../../lib/config';
 
 export async function getStaticPaths() {
   const deals = getAllDealDetails();
@@ -22,7 +22,7 @@ function outboundUrl(url: string) {
   try {
     const u = new URL(url);
     if (SITE_CONFIG.features.referral && SITE_CONFIG.referral) {
-      u.searchParams.set(SITE_CONFIG.referral.param, TRIPPER_REF);
+      u.searchParams.set(SITE_CONFIG.referral.param, REFERRAL_VALUE);
     }
     return u.toString();
   } catch { return url; }
@@ -286,8 +286,8 @@ function fmtDate(d: string) {
   <div class="container">
     <div class="footer-grid">
       <div>
-        <h3>Tripper Deals</h3>
-        <p>Vakantie- en reisaanbiedingen overzichtelijk bij elkaar.</p>
+        <h3>{SITE_CONFIG.name}</h3>
+        <p>{SITE_CONFIG.copy.description}</p>
       </div>
       <div>
         <h4>Navigatie</h4>
@@ -298,8 +298,10 @@ function fmtDate(d: string) {
     </div>
     <div class="footer-bottom">
       <p class="footer-disclaimer">⚠️ Prijzen en beschikbaarheid kunnen afwijken. Controleer altijd bij de aanbieder.</p>
-      <p class="footer-disclaimer">🔗 Links naar tripper.nl bevatten een persoonlijke referral-code (<code>?ref={TRIPPER_REF}</code>).</p>
-      <p class="footer-copyright">© 2026 Tripper Deals.</p>
+      {REFERRAL_ENABLED && (
+        <p class="footer-disclaimer">🔗 Links naar {SOURCE_NAME} bevatten een persoonlijke referral-code (<code>?{REFERRAL_PARAM}={REFERRAL_VALUE}</code>).</p>
+      )}
+      <p class="footer-copyright">© 2026 {SITE_CONFIG.name}.</p>
     </div>
   </div>
 </footer>

@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { SITE_CONFIG, SITE_URL, TRIPPER_REF } from '../lib/config';
+import { SITE_CONFIG, SITE_URL, REFERRAL_VALUE, REFERRAL_PARAM, SOURCE_HOST, REPO_URL } from '../lib/config';
 import { getAllDealDetails } from '../lib/deals';
 
 const site = SITE_URL;
@@ -64,7 +64,7 @@ const homepageJsonLd = [
     <p class="hero-tagline">{SITE_CONFIG.copy.hero}</p>
 
     {SITE_CONFIG.features.referral && SITE_CONFIG.referral && (
-    <a href={`${SITE_CONFIG.sourceUrl}/?${SITE_CONFIG.referral.param}=${TRIPPER_REF}`} target="_blank" rel="sponsored nofollow noopener noreferrer" class="referral-banner">
+    <a href={`${SITE_CONFIG.sourceUrl}/?${SITE_CONFIG.referral.param}=${REFERRAL_VALUE}`} target="_blank" rel="sponsored nofollow noopener noreferrer" class="referral-banner">
       🎁 {SITE_CONFIG.referral.banner} <span class="referral-cta">Aanmelden ↗</span>
     </a>
     )}
@@ -166,7 +166,9 @@ const homepageJsonLd = [
         <h4>Bron</h4>
         <ul>
           <li><a href={`${import.meta.env.BASE_URL}privacy/`}>Privacy &amp; affiliate-disclosure</a></li>
-          <li><a href="https://github.com/graafg/tripper-deals" target="_blank" rel="noopener noreferrer">GitHub repository ↗</a></li>
+          {REPO_URL && (
+            <li><a href={REPO_URL} target="_blank" rel="noopener noreferrer">GitHub repository ↗</a></li>
+          )}
         </ul>
       </div>
       <div>
@@ -181,14 +183,14 @@ const homepageJsonLd = [
     <div class="footer-bottom">
       <p class="footer-disclaimer">⚠️ {SITE_CONFIG.name} is een onafhankelijk overzicht. Prijzen en beschikbaarheid kunnen afwijken. Controleer altijd bij de aanbieder.</p>
       {SITE_CONFIG.features.referral && SITE_CONFIG.referral && (
-        <p class="footer-disclaimer">🔗 Links bevatten onze persoonlijke referral-code (<code>?{SITE_CONFIG.referral.param}={TRIPPER_REF}</code>), zonder extra kosten voor jou.</p>
+        <p class="footer-disclaimer">🔗 Links bevatten onze persoonlijke referral-code (<code>?{SITE_CONFIG.referral.param}={REFERRAL_VALUE}</code>), zonder extra kosten voor jou.</p>
       )}
       <p class="footer-copyright">© {new Date().getFullYear()} {SITE_CONFIG.name}. Alle rechten voorbehouden.</p>
     </div>
   </div>
 </footer>
 
-<script is:inline define:vars={{ TRIPPER_REF, SITE_NAME: SITE_CONFIG.name, MAP_ENABLED: hasMap }}>
+<script is:inline define:vars={{ REFERRAL_VALUE, REFERRAL_PARAM, SOURCE_HOST, SITE_NAME: SITE_CONFIG.name, MAP_ENABLED: hasMap }}>
 // Read base URL injected by Astro in the <meta name="site-base"> tag.
 const DATA_BASE = (document.querySelector('meta[name="site-base"]')?.content || '/').replace(/\/$/, '');
 
@@ -585,7 +587,9 @@ function safeUrl(url) {
   try {
     const u = new URL(url);
     if (!['http:', 'https:'].includes(u.protocol)) return '#';
-    if (/(^|\.)tripper\.nl$/i.test(u.hostname)) u.searchParams.set('ref', TRIPPER_REF);
+    if (REFERRAL_VALUE && SOURCE_HOST && (u.hostname.toLowerCase() === SOURCE_HOST || u.hostname.toLowerCase().endsWith('.' + SOURCE_HOST))) {
+      u.searchParams.set(REFERRAL_PARAM, REFERRAL_VALUE);
+    }
     return esc(u.toString());
   } catch { return '#'; }
 }

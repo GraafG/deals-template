@@ -4,6 +4,7 @@
  */
 import type { APIRoute, GetStaticPaths } from 'astro';
 import { getAllDealDetails } from '../../lib/deals';
+import { SITE_CONFIG, SITE_DOMAIN } from '../../lib/config';
 import sharp from 'sharp';
 
 export const getStaticPaths: GetStaticPaths = () => {
@@ -64,8 +65,8 @@ export const GET: APIRoute = async ({ props }) => {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#dc2626"/>
-      <stop offset="100%" stop-color="#b91c1c"/>
+      <stop offset="0%" stop-color="${esc(SITE_CONFIG.theme.primary)}"/>
+      <stop offset="100%" stop-color="${esc(SITE_CONFIG.theme.secondary)}"/>
     </linearGradient>
     <linearGradient id="circ" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="rgba(255,255,255,0.08)"/>
@@ -77,11 +78,8 @@ export const GET: APIRoute = async ({ props }) => {
   <circle cx="150" cy="540" r="220" fill="url(#circ)"/>
 
   <!-- Brand -->
-  <g transform="translate(80, 74) scale(1.4)">
-    <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" fill="rgba(255,255,255,0.65)"/>
-  </g>
-  <text x="116" y="110" font-size="34" font-family="system-ui,-apple-system,Segoe UI,sans-serif"
-        fill="rgba(255,255,255,0.65)">✈ Tripper Deals</text>
+  <text x="80" y="110" font-size="34" font-family="system-ui,-apple-system,Segoe UI,sans-serif"
+        fill="rgba(255,255,255,0.65)">${esc(SITE_CONFIG.theme.mark)} ${esc(SITE_CONFIG.name)}</text>
   <line x1="80" y1="128" x2="440" y2="128" stroke="rgba(255,255,255,0.20)" stroke-width="1"/>
 
   <!-- Deal name -->
@@ -98,7 +96,7 @@ export const GET: APIRoute = async ({ props }) => {
     <text x="${80 + price.length * 36 + (original ? original.length * 24 + 44 : 28)}"
       y="${priceY - 8}" font-size="34" font-weight="700"
       font-family="system-ui,-apple-system,Segoe UI,sans-serif"
-      fill="#dc2626">${esc(discount)}</text>` : ''}
+      fill="${esc(SITE_CONFIG.theme.primary)}">${esc(discount)}</text>` : ''}
 
   <!-- Provider / location -->
   ${provider ? `<text x="80" y="${Math.min(priceY + 60, 590)}" font-size="28"
@@ -108,7 +106,7 @@ export const GET: APIRoute = async ({ props }) => {
   <!-- URL bottom right -->
   <text x="1140" y="604" font-size="24"
         font-family="system-ui,-apple-system,Segoe UI,sans-serif"
-        fill="rgba(255,255,255,0.35)" text-anchor="end">graafg.github.io/tripper-deals</text>
+        fill="rgba(255,255,255,0.35)" text-anchor="end">${esc(SITE_DOMAIN)}</text>
 </svg>`;
 
   const png = await sharp(Buffer.from(svg))
