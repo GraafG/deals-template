@@ -15,6 +15,8 @@ export default defineConfig({
   site: siteOrigin(provider.siteUrl),
   base: provider.base,
   output: 'static',
+  // Keep HTML-aware spacing between inline elements after the Astro 7 upgrade.
+  compressHTML: true,
   trailingSlash: 'always',
   build: {
     assets: '_assets',

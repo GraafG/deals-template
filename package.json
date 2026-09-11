@@ -2,10 +2,15 @@
   "name": "deals-template",
   "type": "module",
   "version": "1.0.0",
+  "engines": {
+    "node": "^22.19.0 || ^24.0.0"
+  },
+  "packageManager": "npm@11.19.1",
   "scripts": {
     "dev": "astro dev",
     "build": "node scripts/build-provider.mjs example",
     "build:example": "node scripts/build-provider.mjs example",
+    "test:build": "node --test tests/build.test.mjs",
     "preview": "astro preview"
   },
   "dependencies": {
@@ -14,10 +19,5 @@
   },
   "devDependencies": {
     "sharp": "^0.35.4"
-  },
-  "overrides": {
-    "astro": {
-      "sharp": "$sharp"
-    }
   }
 }
