@@ -51,7 +51,7 @@ test('HTML-aware inline spacing and client initialization are preserved', () => 
   assert.match(privacy, /<strong>Niets\.<\/strong> /);
   assert.match(privacy, /vanaf\s+<code>fonts\.googleapis\.com<\/code> en <code>/);
   assert.match(home, /class="price-original">[^<]+<\/span> <span class="price-deal">/);
-  const scripts = [...home.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)];
+  const scripts = [...home.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi)];
   assert.ok(scripts.length > 0);
   for (const [, attributes, source] of scripts) {
     if (attributes.includes('application/ld+json')) {
