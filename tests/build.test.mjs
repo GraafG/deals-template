@@ -3,6 +3,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { Script } from 'node:vm';
 import { test } from 'node:test';
+import { parse } from 'parse5';
 import sharp from 'sharp';
 import sharpService from 'astro/assets/services/sharp';
 
@@ -17,6 +18,27 @@ const slug = (url) => new URL(url).pathname.replace(/\/$/, '').split('/').at(-1)
 const home = read('dist/index.html');
 const privacy = read('dist/privacy/index.html');
 const base = `${provider.base.replace(/\/$/, '')}/`;
+
+function scriptsIn(html) {
+  const scripts = [];
+  function visit(node) {
+    if (node.tagName === 'script') {
+      scripts.push({
+        type: node.attrs.find((attribute) => attribute.name === 'type')?.value.toLowerCase() ?? '',
+        source: node.childNodes.map((child) => child.value ?? '').join(''),
+      });
+    }
+    for (const child of node.childNodes ?? []) visit(child);
+  }
+  visit(parse(html));
+  return scripts;
+}
+
+test('script inspection follows browser HTML parsing rules', () => {
+  assert.deepEqual(scriptsIn('<SCRIPT>window.example = true;</SCRIPT\t\n bar>'), [
+    { type: '', source: 'window.example = true;' },
+  ]);
+});
 
 test('example build retains static page and endpoint routes', () => {
   for (const url of Object.keys(history)) {
@@ -51,10 +73,10 @@ test('HTML-aware inline spacing and client initialization are preserved', () => 
   assert.match(privacy, /<strong>Niets\.<\/strong> /);
   assert.match(privacy, /vanaf\s+<code>fonts\.googleapis\.com<\/code> en <code>/);
   assert.match(home, /class="price-original">[^<]+<\/span> <span class="price-deal">/);
-  const scripts = [...home.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi)];
+  const scripts = scriptsIn(home);
   assert.ok(scripts.length > 0);
-  for (const [, attributes, source] of scripts) {
-    if (attributes.includes('application/ld+json')) {
+  for (const { type, source } of scripts) {
+    if (type === 'application/ld+json') {
       assert.ok(Array.isArray(JSON.parse(source)));
     } else {
       assert.doesNotThrow(() => new Script(source));
