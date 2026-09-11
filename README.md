@@ -24,4 +24,10 @@ npm ci
 npm run build:example
 ```
 
+The Astro-scoped npm override keeps its optional `sharp` dependency on the same
+patched version as the direct dependency (`>=0.35.4`, fixing
+[GHSA-rgj7-g3m4-5g8c](https://github.com/advisories/GHSA-rgj7-g3m4-5g8c)).
+Remove the override when upgrading to an Astro version that natively requires
+patched sharp; Astro 4 otherwise installs a separate, vulnerable `sharp@0.33.5`.
+
 Deployment repos typically add a provider-specific script such as `build:tripper`, `build:vriendenloterij`, or `build:msstore`.
