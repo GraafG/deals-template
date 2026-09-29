@@ -22,6 +22,7 @@ Important feature flags:
 Use Node.js 24 LTS (see `.nvmrc`), or Node.js 22.19.0+ on the 22 LTS line.
 Astro itself requires 22.12.0, but the locked dependency graph requires 22.19.0.
 CI uses npm 11.19.1, also recorded in `package.json`.
+Downstream build/deployment workflows must use a supported Node.js version too.
 
 ```pwsh
 npm ci
@@ -33,8 +34,10 @@ npm audit
 The offline build checks use Node's built-in test runner and the example provider
 to cover routes, data, inline spacing/scripts, OG PNGs, and Astro's image service.
 
-Astro 7 and the direct image-generation dependency both require patched
-`sharp` (`>=0.35.4`, fixing
+Astro >=7.2.8 fixes
+[GHSA-26w7-cxv4-gfx2](https://github.com/advisories/GHSA-26w7-cxv4-gfx2)
+by requiring patched sharp. Astro 7.3.1 and the direct image-generation dependency
+both require `sharp` (`>=0.35.4`, fixing
 [GHSA-rgj7-g3m4-5g8c](https://github.com/advisories/GHSA-rgj7-g3m4-5g8c)).
 The Astro 4 scoped override is no longer needed. Regenerate dependency locks with
 `npx --yes npm@11.19.1 install` to retain cross-platform native/libc metadata.
