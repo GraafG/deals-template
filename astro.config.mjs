@@ -16,6 +16,8 @@ export default defineConfig({
   base: provider.base,
   output: 'static',
   trailingSlash: 'always',
+  // Preserve HTML-aware whitespace instead of Astro 7's JSX-style default.
+  compressHTML: true,
   build: {
     assets: '_assets',
   },
