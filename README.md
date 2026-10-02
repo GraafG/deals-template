@@ -19,26 +19,37 @@ Important feature flags:
 
 ## Build
 
-Use Node.js 24 LTS (see `.nvmrc`). Node.js 22.19+ on the 22.x line is also
-supported; the locked dependency graph requires more than Astro's 22.12.0 floor.
+Use Node.js 24 LTS (see `.nvmrc`), or Node.js 22.19.0+ on the 22 LTS line.
+Astro itself requires 22.12.0, but the locked dependency graph requires 22.19.0.
+CI uses npm 11.19.1, also recorded in `package.json`.
 Downstream build/deployment workflows must use a supported Node.js version too.
 
 ```pwsh
 npm ci
 npm run build:example
+npm run test:build
+npm audit
 ```
 
-Use npm 11.19.1 when regenerating `package-lock.json` to preserve platform and
-optional-dependency metadata.
+The offline build checks use Node's built-in test runner and the example provider
+to cover routes, data, inline spacing/scripts, OG PNGs, and Astro's image service.
 
 Astro >=7.2.8 fixes
 [GHSA-26w7-cxv4-gfx2](https://github.com/advisories/GHSA-26w7-cxv4-gfx2)
-by requiring patched sharp.
-The Astro-scoped npm override keeps its optional `sharp` dependency on the same
-patched version as the direct dependency (`>=0.35.4`, fixing
+by requiring patched sharp. Astro 7.3.1 and the direct image-generation dependency
+both require `sharp` (`>=0.35.4`, fixing
 [GHSA-rgj7-g3m4-5g8c](https://github.com/advisories/GHSA-rgj7-g3m4-5g8c)).
-The override is retained as a guard against a separate, older sharp installation.
-`compressHTML: true` preserves the template's HTML-aware whitespace across the
-Astro 7 upgrade instead of adopting its new JSX-style whitespace default.
+The Astro 4 scoped override is no longer needed. Regenerate dependency locks with
+`npx --yes npm@11.19.1 install` to retain cross-platform native/libc metadata.
+The lockfile also resolves Astro's transitive `devalue` dependency to a patched
+version (`>=5.9.2`, fixing
+[GHSA-9rgm-9g3h-6x36](https://github.com/advisories/GHSA-9rgm-9g3h-6x36)).
+Check the full dependency graph with `npm audit` after dependency updates.
+
+The Astro configuration explicitly retains HTML-aware whitespace compression
+(`compressHTML: true`) rather than Astro 7's JSX-style default, preserving spaces
+between inline elements. The site remains statically rendered with trailing
+slashes on page routes and extension-based endpoints such as `feed.xml` and
+`og/<slug>.png` without trailing slashes.
 
 Deployment repos typically add a provider-specific script such as `build:tripper`, `build:vriendenloterij`, or `build:msstore`.
